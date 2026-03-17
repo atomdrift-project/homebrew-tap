@@ -1,0 +1,27 @@
+when:
+  - event: [push, pull_request]
+
+steps:
+  - name: lint
+    image: ruby:3.3
+    commands:
+      - gem install bundler
+      - bundle init
+      - 'echo ''gem "brew-gem"'' >> Gemfile || true'
+      - ruby -c Formula/*.rb
+      - echo "All formulas parse successfully"
+
+  - name: validate
+    image: ruby:3.3
+    commands:
+      - |
+        for f in Formula/*.rb; do
+          echo "Checking $f ..."
+          # Verify required fields exist
+          grep -q 'desc ' "$f" || { echo "FAIL: missing desc in $f"; exit 1; }
+          grep -q 'homepage ' "$f" || { echo "FAIL: missing homepage in $f"; exit 1; }
+          grep -q 'license ' "$f" || { echo "FAIL: missing license in $f"; exit 1; }
+          grep -q 'url ' "$f" || { echo "FAIL: missing url in $f"; exit 1; }
+          echo "  OK"
+        done
+        echo "All formulas validated"
