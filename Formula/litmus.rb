@@ -3,8 +3,8 @@ class Litmus < Formula
   homepage "https://codeberg.org/atomdrift/litmus"
 
   url "https://codeberg.org/atomdrift/litmus.git",
-      tag:      "v1.1.0",
-      revision: "5623ffa4a2ffc7e33272c0a7637947c3a9398081"
+      tag:      "v1.2.1",
+      revision: "b10074a9d13dc91e5134a8f6e9e79811e77285fc"
   license "Apache-2.0"
   head "https://codeberg.org/atomdrift/litmus.git", branch: "main"
 
