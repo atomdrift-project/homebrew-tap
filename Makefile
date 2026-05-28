@@ -35,7 +35,7 @@ endif
 		exit 1; \
 	fi; \
 	echo "Tag $(VERSION) -> commit $$COMMIT"; \
-	sed -i '' -E "s/tag:[ ]*\"v[0-9]+\.[0-9]+\.[0-9]+\"/tag:      \"$(VERSION)\"/" Formula/$(FORMULA).rb; \
+	sed -i '' -E "s/tag:[ ]*\"[^\"]*\"/tag:      \"$(VERSION)\"/" Formula/$(FORMULA).rb; \
 	sed -i '' -E "s/revision:[ ]*\"[a-f0-9]+\"/revision: \"$$COMMIT\"/" Formula/$(FORMULA).rb
 	@echo "Done. Run 'make test' to verify."
 

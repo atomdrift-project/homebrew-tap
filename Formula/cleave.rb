@@ -3,8 +3,8 @@ class Cleave < Formula
   homepage "https://codeberg.org/atomdrift/cleave"
 
   url "https://codeberg.org/atomdrift/cleave.git",
-      tag:      "v2.0.0-rc.2",
-      revision: "b065f972cb0b3459b34c1e96647ccecafe5089eb"
+      tag:      "v2.0.0-rc.3",
+      revision: "17663a90f8683f9adcb079f87125983798e4efb7"
   license "Apache-2.0"
   head "https://codeberg.org/atomdrift/cleave.git", branch: "main"
 
