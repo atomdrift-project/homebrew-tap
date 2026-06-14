@@ -13,7 +13,7 @@ Then install formulas:
 ```bash
 brew install atomdrift/tap/stng
 brew install atomdrift/tap/cleave
-brew install atomdrift/tap/litmus
+brew install atomdrift/tap/scan
 ```
 
 Or in a `brew bundle` `Brewfile`:
@@ -22,14 +22,14 @@ Or in a `brew bundle` `Brewfile`:
 tap "atomdrift/tap", "https://codeberg.org/atomdrift/homebrew-tap.git"
 brew "stng"
 brew "cleave"
-brew "litmus"
+brew "scan"
 ```
 
 ## Formulas
 
 - **stng** - Language-aware string extraction for Go and Rust binaries
 - **cleave** - AST-aware software decomposition and deep static binary analysis
-- **litmus** - ML-powered malware classification using cleave static analysis
+- **scan** - Context-free malware detection using ML and cleave static analysis
 
 ## Documentation
 

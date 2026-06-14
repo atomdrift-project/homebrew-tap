@@ -3,8 +3,8 @@ class Stng < Formula
   homepage "https://codeberg.org/atomdrift/stng"
 
   url "https://codeberg.org/atomdrift/stng.git",
-      tag:      "v1.6.0",
-      revision: "9cfd813f0d53a191df17d799eb3186d885a8b8aa"
+      tag:      "v1.6.2",
+      revision: "3b9adc200726da82bc45ea72539fc4e24893378b"
   license "Apache-2.0"
   head "https://codeberg.org/atomdrift/stng.git", branch: "main"
 

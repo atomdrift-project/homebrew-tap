@@ -1,4 +1,4 @@
-FORMULAS = stng cleave litmus filefacts
+FORMULAS = stng cleave scan filefacts
 TAP = atomdrift/tap
 TAP_DIR = $(shell brew --repository $(TAP) 2>/dev/null)
 
