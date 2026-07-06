@@ -16,6 +16,6 @@ class Scan < Formula
   end
 
   test do
-    assert_match "ascan", shell_output("#{bin}/ascan --help")
+    assert_match "atomscan", shell_output("#{bin}/atomscan --help")
   end
 end
