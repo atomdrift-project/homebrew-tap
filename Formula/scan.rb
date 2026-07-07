@@ -3,8 +3,8 @@ class Scan < Formula
   homepage "https://codeberg.org/atomdrift/scan"
 
   url "https://codeberg.org/atomdrift/scan.git",
-      tag:      "v2.2.0",
-      revision: "c8f9b6044d061734aea1cc0c4a36b0363e6d5e7d"
+      tag:      "v2.2.1",
+      revision: "63f7d03940ab6bdceec588371a006f1c6739c3e5"
   license "Apache-2.0"
   head "https://codeberg.org/atomdrift/scan.git", branch: "main"
 
