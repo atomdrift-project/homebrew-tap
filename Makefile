@@ -25,10 +25,10 @@ ifndef VERSION
 	$(error VERSION is required. Usage: make upgrade FORMULA=stng VERSION=v1.0.1)
 endif
 	@echo "Upgrading $(FORMULA) to $(VERSION)..."
-	@COMMIT=$$(git ls-remote https://codeberg.org/atomdrift/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
+	@COMMIT=$$(git ls-remote https://github.com/atomdrift-project/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
 	if [ -z "$$COMMIT" ]; then \
 		echo "Trying lightweight tag..."; \
-		COMMIT=$$(git ls-remote --refs https://codeberg.org/atomdrift/$(FORMULA).git $(VERSION) | head -1 | cut -f1); \
+		COMMIT=$$(git ls-remote --refs https://github.com/atomdrift-project/$(FORMULA).git $(VERSION) | head -1 | cut -f1); \
 	fi; \
 	if [ -z "$$COMMIT" ]; then \
 		echo "Error: Could not find tag $(VERSION) for $(FORMULA)"; \
@@ -54,7 +54,7 @@ endif
 verify:
 	@echo "=== Syncing tap ==="
 	@if [ -z "$(TAP_DIR)" ]; then \
-		echo "Tap not found. Run: brew tap $(TAP) https://codeberg.org/atomdrift/homebrew-tap.git"; \
+		echo "Tap not found. Run: brew tap $(TAP) https://github.com/atomdrift-project/homebrew-tap.git"; \
 		exit 1; \
 	fi
 	@cp Formula/*.rb "$(TAP_DIR)/Formula/"

@@ -5,7 +5,7 @@
 Since this tap is hosted on Codeberg, add it with the full URL:
 
 ```bash
-brew tap atomdrift/tap https://codeberg.org/atomdrift/homebrew-tap.git
+brew tap atomdrift/tap https://github.com/atomdrift-project/homebrew-tap.git
 ```
 
 Then install formulas:
@@ -19,7 +19,7 @@ brew install atomdrift/tap/scan
 Or in a `brew bundle` `Brewfile`:
 
 ```ruby
-tap "atomdrift/tap", "https://codeberg.org/atomdrift/homebrew-tap.git"
+tap "atomdrift/tap", "https://github.com/atomdrift-project/homebrew-tap.git"
 brew "stng"
 brew "cleave"
 brew "scan"

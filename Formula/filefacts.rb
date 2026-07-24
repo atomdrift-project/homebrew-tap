@@ -1,12 +1,12 @@
 class Filefacts < Formula
   desc "Extracts file facts: identification, structure, strings, metrics, symbols, AST"
-  homepage "https://codeberg.org/atomdrift/filefacts"
+  homepage "https://github.com/atomdrift-project/filefacts"
 
-  url "https://codeberg.org/atomdrift/filefacts.git",
+  url "https://github.com/atomdrift-project/filefacts.git",
       tag:      "v1.2.0",
       revision: "37942aafcdb315211796b1490c710293b121ff68"
   license "Apache-2.0"
-  head "https://codeberg.org/atomdrift/filefacts.git", branch: "main"
+  head "https://github.com/atomdrift-project/filefacts.git", branch: "main"
 
   depends_on "rust" => :build
 
