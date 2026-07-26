@@ -3,8 +3,8 @@ class Filefacts < Formula
   homepage "https://github.com/atomdrift-project/filefacts"
 
   url "https://github.com/atomdrift-project/filefacts.git",
-      tag:      "v1.2.0",
-      revision: "37942aafcdb315211796b1490c710293b121ff68"
+      tag:      "v1.3.0",
+      revision: "97cfaca64dc6726740ab694805f45b3a6426cd6c"
   license "Apache-2.0"
   head "https://github.com/atomdrift-project/filefacts.git", branch: "main"
 

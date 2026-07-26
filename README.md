@@ -2,7 +2,7 @@
 
 ## How do I install these formulae?
 
-Since this tap is hosted on Codeberg, add it with the full URL:
+Since this tap lives outside Homebrew's default namespace, add it with the full URL:
 
 ```bash
 brew tap atomdrift/tap https://github.com/atomdrift-project/homebrew-tap.git
