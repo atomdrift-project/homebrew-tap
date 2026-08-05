@@ -3,8 +3,8 @@ class Scan < Formula
   homepage "https://github.com/atomdrift-project/scan"
 
   url "https://github.com/atomdrift-project/scan.git",
-      tag:      "v2.4.0",
-      revision: "453c720ff46f635f6e1ff566f2c963edeebda197"
+      tag:      "v2.5.0",
+      revision: "002c2ea4b8238d1599edc031af58e57233a570fe"
   license "Apache-2.0"
   head "https://github.com/atomdrift-project/scan.git", branch: "main"
 
