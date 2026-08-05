@@ -1,5 +1,5 @@
 FORMULAS = stng cleave scan filefacts
-TAP = atomdrift/tap
+TAP = atomdrift-project/tap
 TAP_DIR = $(shell brew --repository $(TAP) 2>/dev/null)
 
 .PHONY: test style audit upgrade reinstall verify
@@ -9,11 +9,11 @@ test: style audit
 
 # Fix style issues
 style:
-	brew style --fix atomdrift/tap
+	brew style --fix $(TAP)
 
 # Audit the tap
 audit:
-	brew audit --except=installed,token_conflicts --tap=atomdrift/tap
+	brew audit --except=installed,token_conflicts --tap=$(TAP)
 
 # Upgrade a formula to a new version
 # Usage: make upgrade FORMULA=stng VERSION=v1.0.1
@@ -46,7 +46,8 @@ ifndef FORMULA
 	$(error FORMULA is required. Usage: make reinstall FORMULA=stng)
 endif
 	@echo "Copying $(FORMULA) to tap..."
-	@cp Formula/$(FORMULA).rb /opt/homebrew/Library/Taps/atomdrift/homebrew-tap/Formula/
+	@if [ -z "$(TAP_DIR)" ]; then echo "Tap not found. Run: brew tap $(TAP)"; exit 1; fi
+	@cp Formula/$(FORMULA).rb "$(TAP_DIR)/Formula/"
 	@echo "Reinstalling..."
 	brew reinstall $(TAP)/$(FORMULA)
 
@@ -54,7 +55,7 @@ endif
 verify:
 	@echo "=== Syncing tap ==="
 	@if [ -z "$(TAP_DIR)" ]; then \
-		echo "Tap not found. Run: brew tap $(TAP) https://github.com/atomdrift-project/homebrew-tap.git"; \
+		echo "Tap not found. Run: brew tap $(TAP)"; \
 		exit 1; \
 	fi
 	@cp Formula/*.rb "$(TAP_DIR)/Formula/"

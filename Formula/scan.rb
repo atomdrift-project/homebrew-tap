@@ -9,7 +9,7 @@ class Scan < Formula
   head "https://github.com/atomdrift-project/scan.git", branch: "main"
 
   depends_on "rust" => :build
-  depends_on "atomdrift/tap/cleave"
+  depends_on "atomdrift-project/tap/cleave"
 
   def install
     system "cargo", "install", *std_cargo_args
