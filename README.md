@@ -28,6 +28,18 @@ brew "scan"
 - **filefacts** - Structured file facts for feature extraction and automation
 - **scan** - Context-free malware detection using ML and cleave static analysis
 
+## Recommended extraction tools
+
+`cleave` shells out to these for deeper analysis; they are `:recommended`, so
+a normal install pulls them in:
+
+```bash
+brew install sevenzip rizin upx
+```
+
+Use `sevenzip` (binary `7zz`), not `p7zip` — p7zip's `7z` cannot read APFS,
+so `.dmg` contents go unscanned.
+
 ## Documentation
 
 `brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
