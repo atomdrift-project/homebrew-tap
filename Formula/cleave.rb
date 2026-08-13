@@ -10,6 +10,9 @@ class Cleave < Formula
 
   depends_on "rust" => :build
   depends_on "rizin" => :recommended
+  # Upstream 7-Zip (`7zz`), not `p7zip`: p7zip's `7z` has no APFS handler, so
+  # .dmg contents go unscanned. cleave prefers `7zz` and falls back to `7z`.
+  depends_on "sevenzip" => :recommended
   depends_on "upx" => :recommended
 
   def install

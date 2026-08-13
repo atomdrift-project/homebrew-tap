@@ -25,7 +25,14 @@ ifndef VERSION
 	$(error VERSION is required. Usage: make upgrade FORMULA=stng VERSION=v1.0.1)
 endif
 	@echo "Upgrading $(FORMULA) to $(VERSION)..."
-	@COMMIT=$$(git ls-remote https://github.com/atomdrift-project/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
+	@# Formulas that ship prebuilt release assets carry no tag:/revision: to bump;
+	@# they need their asset urls and sha256s rewritten from upstream SHA256SUMS.
+	@if grep -q 'releases/download' Formula/$(FORMULA).rb; then \
+		python3 tools/upgrade-binary.py Formula/$(FORMULA).rb \
+			atomdrift-project/$(FORMULA) $(VERSION) || exit 1; \
+		exit 0; \
+	fi; \
+	COMMIT=$$(git ls-remote https://github.com/atomdrift-project/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
 	if [ -z "$$COMMIT" ]; then \
 		echo "Trying lightweight tag..."; \
 		COMMIT=$$(git ls-remote --refs https://github.com/atomdrift-project/$(FORMULA).git $(VERSION) | head -1 | cut -f1); \
