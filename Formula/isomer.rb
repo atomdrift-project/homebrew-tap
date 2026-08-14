@@ -3,8 +3,8 @@ class Isomer < Formula
   homepage "https://github.com/atomdrift-project/isomer"
 
   url "https://github.com/atomdrift-project/isomer.git",
-      tag:      "v0.4.1",
-      revision: "a847e065bccc39fa61be1829b8bdd923e4350859"
+      tag:      "v0.5.0",
+      revision: "37e3e3d767c63bee68b6abe587a77dbce82c7fad"
   license "Apache-2.0"
   head "https://github.com/atomdrift-project/isomer.git", branch: "main"
 
