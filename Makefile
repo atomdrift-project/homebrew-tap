@@ -51,7 +51,8 @@ endif
 	TMP=$$(mktemp); \
 	sed -E -e "s/tag:[ ]*\"[^\"]*\"/tag:      \"$(VERSION)\"/" \
 	       -e "s/revision:[ ]*\"[a-f0-9]+\"/revision: \"$$COMMIT\"/" \
-	       Formula/$(FORMULA).rb > "$$TMP" && mv "$$TMP" Formula/$(FORMULA).rb
+	       Formula/$(FORMULA).rb > "$$TMP" && \
+		cat "$$TMP" > Formula/$(FORMULA).rb && rm -f "$$TMP"
 	@echo "Done. Run 'make test' to verify."
 
 # Reinstall a formula from the local tap
