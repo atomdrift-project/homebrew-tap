@@ -80,8 +80,10 @@ jobs:
           # is pinned to its tag. Only matters for a project mid-conversion,
           # where a binary bump would otherwise supersede the source one an
           # hour later; for stng and filefacts, which have no pipeline at all,
-          # this is pure delay.
-          SOURCE_GATE_MINUTES: "60"
+          # this is pure delay. Dialed right down for now so a bump is easy to
+          # provoke -- the cost of it being short is at most one superseded
+          # source bump, since nothing here ever changes a formula's mode.
+          SOURCE_GATE_MINUTES: "5"
 
           # How long a binary formula's release may go without verified assets
           # before the run says so out loud. Deliberately not the same number:
