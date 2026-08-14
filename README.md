@@ -9,6 +9,7 @@ brew install atomdrift-project/tap/stng
 brew install atomdrift-project/tap/cleave
 brew install atomdrift-project/tap/filefacts
 brew install atomdrift-project/tap/scan
+brew install atomdrift-project/tap/isomer
 ```
 
 Or in a `brew bundle` `Brewfile`:
@@ -19,6 +20,7 @@ brew "stng"
 brew "cleave"
 brew "filefacts"
 brew "scan"
+brew "isomer"
 ```
 
 ## Formulas
@@ -27,6 +29,7 @@ brew "scan"
 - **cleave** - AST-aware software decomposition and deep static binary analysis
 - **filefacts** - Structured file facts for feature extraction and automation
 - **scan** - Context-free malware detection using ML and cleave static analysis
+- **isomer** - Supply-chain attack detection at a molecular level
 
 ## Recommended extraction tools
 

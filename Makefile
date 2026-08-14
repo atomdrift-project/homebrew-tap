@@ -1,8 +1,12 @@
-FORMULAS = stng cleave scan filefacts
+FORMULAS = stng cleave scan filefacts isomer
 TAP = atomdrift-project/tap
 TAP_DIR = $(shell brew --repository $(TAP) 2>/dev/null)
 
-.PHONY: test style audit upgrade reinstall verify
+.PHONY: test style audit upgrade reinstall verify formulas
+
+# One source of truth for the formula list, so CI iterates over the same set.
+formulas:
+	@echo $(FORMULAS)
 
 # Run all checks
 test: style audit
@@ -27,9 +31,11 @@ endif
 	@echo "Upgrading $(FORMULA) to $(VERSION)..."
 	@# Formulas that ship prebuilt release assets carry no tag:/revision: to bump;
 	@# they need their asset urls and sha256s rewritten from upstream SHA256SUMS.
+	@# SUMS optionally names an already-verified SHA256SUMS to read instead of
+	@# refetching it; CI passes the file whose cosign bundle it just checked.
 	@if grep -q 'releases/download' Formula/$(FORMULA).rb; then \
 		python3 tools/upgrade-binary.py Formula/$(FORMULA).rb \
-			atomdrift-project/$(FORMULA) $(VERSION) || exit 1; \
+			atomdrift-project/$(FORMULA) $(VERSION) $(SUMS) || exit 1; \
 		exit 0; \
 	fi; \
 	COMMIT=$$(git ls-remote https://github.com/atomdrift-project/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
@@ -42,8 +48,10 @@ endif
 		exit 1; \
 	fi; \
 	echo "Tag $(VERSION) -> commit $$COMMIT"; \
-	sed -i '' -E "s/tag:[ ]*\"[^\"]*\"/tag:      \"$(VERSION)\"/" Formula/$(FORMULA).rb; \
-	sed -i '' -E "s/revision:[ ]*\"[a-f0-9]+\"/revision: \"$$COMMIT\"/" Formula/$(FORMULA).rb
+	TMP=$$(mktemp); \
+	sed -E -e "s/tag:[ ]*\"[^\"]*\"/tag:      \"$(VERSION)\"/" \
+	       -e "s/revision:[ ]*\"[a-f0-9]+\"/revision: \"$$COMMIT\"/" \
+	       Formula/$(FORMULA).rb > "$$TMP" && mv "$$TMP" Formula/$(FORMULA).rb
 	@echo "Done. Run 'make test' to verify."
 
 # Reinstall a formula from the local tap
