@@ -23,6 +23,19 @@
 # produce a bump, and a run that fails for any reason simply retries later
 # instead of needing a manual recovery dispatch.
 #
+# A formula's mode -- prebuilt binary or built from source -- is never changed
+# here. `make upgrade` branches on what the file already contains: asset urls
+# get their versions and checksums rewritten, a git url gets its tag and
+# revision rewritten, and nothing converts between the two. Switching a formula
+# to binaries is a structural edit (on_macos/on_linux blocks replacing a
+# top-level git url) and stays a deliberate human change, so a formula cannot
+# oscillate between the two forms no matter what upstream is doing.
+#
+# What can go wrong is subtler: a project that has just grown a release
+# pipeline gets a tag long before it gets assets, and pinning its formula to
+# that tag mid-build produces a source bump that a binary bump immediately
+# supersedes. SOURCE_GATE_MINUTES below is the wait that prevents it.
+#
 #     gh workflow run bump.yml -f formula=scan     # check one, now
 
 name: bump
@@ -63,6 +76,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ONLY: ${{ inputs.formula || '' }}
+          # How long a release must have existed before a source-build formula
+          # is pinned to its tag. Only matters for a project mid-conversion,
+          # where a binary bump would otherwise supersede the source one an
+          # hour later; for stng and filefacts, which have no pipeline at all,
+          # this is pure delay.
+          SOURCE_GATE_MINUTES: "60"
+
+          # How long a binary formula's release may go without verified assets
+          # before the run says so out loud. Deliberately not the same number:
+          # a healthy release matrix here runs 1h21m to 2h33m, so warning at
+          # the source gate would fire on every successful release and train
+          # everyone to ignore it. This one has to clear the slowest good run.
+          STUCK_WARN_MINUTES: "360"
         run: |
           set -euo pipefail
 
@@ -76,17 +102,36 @@ jobs:
               continue
             fi
 
-            # Source-build formulas track a tag and revision, not release
-            # assets, and have no SHA256SUMS to verify. They are bumped by hand
-            # until their projects grow a release pipeline.
-            if ! grep -q 'releases/download' "Formula/$f.rb"; then
-              echo "skip    $f - builds from source, nothing to track"
+            repo="atomdrift-project/$f"
+            if ! meta="$(gh release view --repo "$repo" \
+                --json tagName,publishedAt -q '.tagName + " " + .publishedAt' 2>/dev/null)"; then
+              echo "skip    $f - no releases published"
               continue
             fi
+            tag="${meta% *}"
+            published="${meta#* }"
 
-            repo="atomdrift-project/$f"
-            if ! tag="$(gh release view --repo "$repo" --json tagName -q .tagName 2>/dev/null)"; then
-              echo "skip    $f - no releases published"
+            # python3 rather than `date -d`, so the same arithmetic works when
+            # this loop is run by hand on a Mac.
+            age="$(python3 -c "import datetime,sys; t=datetime.datetime.fromisoformat(sys.argv[1].replace('Z','+00:00')); print(int((datetime.datetime.now(datetime.timezone.utc)-t).total_seconds()//60))" "$published")"
+
+            # Source-build formulas carry a tag and revision instead of asset
+            # urls, and have no SHA256SUMS to verify against.
+            if ! grep -q 'releases/download' "Formula/$f.rb"; then
+              if grep -q "tag:.*\"$tag\"" "Formula/$f.rb"; then
+                echo "ok      $f - already at $tag (source)"
+                continue
+              fi
+              if [ "$age" -lt "$SOURCE_GATE_MINUTES" ]; then
+                echo "wait    $f - $tag is ${age}m old, holding ${SOURCE_GATE_MINUTES}m in case binaries land"
+                skipped="$skipped $f@$tag"
+                continue
+              fi
+              make upgrade FORMULA="$f" VERSION="$tag"
+              brew style "Formula/$f.rb"
+              git add "Formula/$f.rb"
+              changed="$changed $f@$tag(src)"
+              echo "bumped  $f -> $tag (source)"
               continue
             fi
 
@@ -98,7 +143,15 @@ jobs:
             rm -rf sums && mkdir sums
             if ! gh release download "$tag" --repo "$repo" \
                 --pattern 'SHA256SUMS*' --dir sums 2>/dev/null; then
-              echo "wait    $f - $tag has no checksums yet, release still building"
+              # Never fall back to source here. The formula stays on its last
+              # verified release, which still works, rather than being pushed
+              # onto an unverified source build; past the gate that stops being
+              # a slow release and starts being a broken one worth naming.
+              if [ "$age" -ge "$STUCK_WARN_MINUTES" ]; then
+                echo "::warning::$f $tag has had no verified assets for ${age}m - release pipeline may be stuck"
+              else
+                echo "wait    $f - $tag is ${age}m old, assets still building"
+              fi
               skipped="$skipped $f@$tag"
               continue
             fi

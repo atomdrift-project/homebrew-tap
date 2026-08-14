@@ -28,14 +28,23 @@ class Scan < Formula
     end
   end
 
+  # musl, not gnu. The gnu builds are dynamically linked against libc.so.6,
+  # libstdc++.so.6, and libgcc_s.so.1, and require symbols up to GLIBC_2.34 --
+  # fine on a Homebrew tier 1 host (glibc >= 2.39), broken on RHEL 8 (2.28),
+  # Debian 11 and Ubuntu 20.04 (2.31). Homebrew installs its own glibc and gcc
+  # on those tier 2 systems, but that is for formulas it builds; a prebuilt
+  # binary dropped into the Cellar is still resolved against the host's loader.
+  # The musl builds are static-pie with zero NEEDED entries on both
+  # architectures, so they have no version floor at all. isomer-action already
+  # installs these same musl targets on Linux runners.
   on_linux do
     on_arm do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.6.0/atomscan-2.6.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "9e2705c55b96cb0656628965fd02e3b7e1ccee7c5cfe62e1bd31123ec436fe1f"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.6.0/atomscan-2.6.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "b087946c37b715c6925e8fe945cd74840823175bb9e6e3988f31f9a507d9a35a"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.6.0/atomscan-2.6.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "05386d112c0f35dc56f663cf413488fa7789ad245d0d8f20b74839dec090d7e4"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.6.0/atomscan-2.6.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "ed887c0a32c1d795b0fe1176c92236f41caeb0374486dcb2c6f30230ad40921c"
     end
   end
 
