@@ -96,6 +96,12 @@ jobs:
 
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+          # In config rather than inline on the commit: the retry path below
+          # rebases, which replays commits of its own and dies with "empty
+          # ident name" if the identity only ever reached one `git commit`.
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
           changed=""
           skipped=""
 
@@ -197,9 +203,7 @@ jobs:
             exit 0
           fi
 
-          git -c user.name='github-actions[bot]' \
-              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-              commit -m "bump:$changed"
+          git commit -m "bump:$changed"
 
           # A human may have pushed to main between checkout and now. Rebase
           # onto whatever landed and retry rather than failing the run.
@@ -208,7 +212,14 @@ jobs:
               exit 0
             fi
             echo "push rejected, rebasing (attempt $attempt)"
-            git pull --rebase
+            # A conflict means someone edited the same formula by hand. Leaving
+            # the tree mid-rebase would make the next run start from a broken
+            # checkout, so back it out and let a person look.
+            if ! git pull --rebase; then
+              git rebase --abort || true
+              echo "::error::rebase conflict against main - resolve by hand"
+              exit 1
+            fi
           done
           echo "::error::could not push after 3 attempts"
           exit 1
