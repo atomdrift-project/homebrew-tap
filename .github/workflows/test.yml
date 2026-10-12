@@ -1,0 +1,51 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  automation:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: make automation-test
+      - name: Check Ruby and shell syntax
+        run: |
+          for formula in Formula/*.rb; do ruby -c "$formula"; done
+          bash -n tools/bump.sh
+
+  formulas:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check and test the local formulas
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          brew tap atomdrift-project/tap
+          cp Formula/*.rb "$(brew --repository atomdrift-project/tap)/Formula/"
+          brew style atomdrift-project/tap
+          brew audit --except=installed,token_conflicts --tap=atomdrift-project/tap
+          for formula in $(make -s formulas); do
+            if rg -q 'releases/download' "Formula/$formula.rb"; then
+              brew install "atomdrift-project/tap/$formula"
+              brew test "atomdrift-project/tap/$formula"
+            fi
+          done

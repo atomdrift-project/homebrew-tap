@@ -1,15 +1,19 @@
-FORMULAS = stng cleave scan filefacts isomer
+FORMULAS = $(sort $(basename $(notdir $(wildcard Formula/*.rb))))
 TAP = atomdrift-project/tap
 TAP_DIR = $(shell brew --repository $(TAP) 2>/dev/null)
 
-.PHONY: test style audit upgrade reinstall verify formulas
+.PHONY: test style audit automation-test upgrade reinstall verify formulas
 
 # One source of truth for the formula list, so CI iterates over the same set.
 formulas:
 	@echo $(FORMULAS)
 
 # Run all checks
-test: style audit
+test: automation-test style audit
+
+# Exercise release selection and formula rewriting without network access.
+automation-test:
+	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tools/tests -v
 
 # Fix style issues
 style:
@@ -29,13 +33,10 @@ ifndef VERSION
 	$(error VERSION is required. Usage: make upgrade FORMULA=stng VERSION=v1.0.1)
 endif
 	@echo "Upgrading $(FORMULA) to $(VERSION)..."
-	@# Formulas that ship prebuilt release assets carry no tag:/revision: to bump;
-	@# they need their asset urls and sha256s rewritten from upstream SHA256SUMS.
-	@# SUMS optionally names an already-verified SHA256SUMS to read instead of
-	@# refetching it; CI passes the file whose cosign bundle it just checked.
-	@if grep -q 'releases/download' Formula/$(FORMULA).rb; then \
+	@# A verified SUMS also converts a source formula when binaries first land.
+	@if [ -n "$(SUMS)" ] || grep -q 'releases/download' "Formula/$(FORMULA).rb"; then \
 		python3 tools/upgrade-binary.py Formula/$(FORMULA).rb \
-			atomdrift-project/$(FORMULA) $(VERSION) $(SUMS) || exit 1; \
+			atomdrift-project/$(FORMULA) $(VERSION) $(if $(SUMS),"$(SUMS)") || exit 1; \
 		exit 0; \
 	fi; \
 	COMMIT=$$(git ls-remote https://github.com/atomdrift-project/$(FORMULA).git "$(VERSION)^{}" 2>/dev/null | head -1 | cut -f1); \
@@ -82,7 +83,7 @@ verify:
 	@echo ""
 	@set -e; for f in $(FORMULAS); do \
 		echo "=== Installing $$f ==="; \
-		brew install --build-from-source $(TAP)/$$f; \
+		brew install $(TAP)/$$f; \
 		echo ""; \
 		echo "=== Testing $$f ==="; \
 		brew test $(TAP)/$$f; \

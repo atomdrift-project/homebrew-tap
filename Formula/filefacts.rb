@@ -9,6 +9,8 @@ class Filefacts < Formula
   head "https://github.com/atomdrift-project/filefacts.git", branch: "main"
 
   depends_on "rust" => :build
+  # Recover deeper symbols from PE, ELF, and Mach-O files.
+  depends_on "rizin" => :recommended
 
   def install
     system "cargo", "install", *std_cargo_args

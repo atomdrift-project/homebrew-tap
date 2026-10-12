@@ -2,9 +2,6 @@ class Cleave < Formula
   desc "AST-aware software decomposition and deep static binary analysis"
   homepage "https://github.com/atomdrift-project/cleave"
 
-  url "https://github.com/atomdrift-project/cleave.git",
-      tag:      "v2.12.1",
-      revision: "af5baf135f0a92aed33482ae1c492c00882dbc34"
   license "Apache-2.0"
 
   head do
@@ -21,12 +18,12 @@ class Cleave < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/atomdrift-project/cleave/releases/download/v2.7.1/cleave-2.7.1-aarch64-apple-darwin.tar.gz"
-      sha256 "47a133a820225cd51b7bffb15be723a8d79670e7a0622115f8877b2b5a900fe8"
+      url "https://github.com/atomdrift-project/cleave/releases/download/v2.12.1/cleave-2.12.1-aarch64-apple-darwin.tar.gz"
+      sha256 "b6263c33a5951415f27c2d5a73bce9e0cadae5d8fceeff9cb50a79688aa00540"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/cleave/releases/download/v2.7.1/cleave-2.7.1-x86_64-apple-darwin.tar.gz"
-      sha256 "f5e5f4d1902042dce285ac85e83a9052823241ab57937c32e262f089540f6ff5"
+      url "https://github.com/atomdrift-project/cleave/releases/download/v2.12.1/cleave-2.12.1-x86_64-apple-darwin.tar.gz"
+      sha256 "919cf9b2387425427abda74b90e85bae282efe2b359d7f126659cb306e0d04a4"
     end
   end
 
@@ -34,12 +31,12 @@ class Cleave < Formula
   # floor and a libstdc++ dependency; the musl ones are static with no floor.
   on_linux do
     on_arm do
-      url "https://github.com/atomdrift-project/cleave/releases/download/v2.7.1/cleave-2.7.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "d2822a163949f501de2a7ec54cc13dc558bdacfcef281909ba967c0e1e0f9224"
+      url "https://github.com/atomdrift-project/cleave/releases/download/v2.12.1/cleave-2.12.1-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "f95c4299b6b7009fadcb4b72b4a32d2d37cbcd95d0d24187fd8f7e10d7af1528"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/cleave/releases/download/v2.7.1/cleave-2.7.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "1059201f6439f1147ddee0083afefea8c0ee257ddf592d6d4a54e76a1e395602"
+      url "https://github.com/atomdrift-project/cleave/releases/download/v2.12.1/cleave-2.12.1-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "19437bafa19e56845a011d6af2bfd6d0db2dc53d192963038c85124af1003543"
     end
   end
 

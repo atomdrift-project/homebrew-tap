@@ -69,6 +69,6 @@ class Scan < Formula
       #!/bin/sh
       echo hello
     EOS
-    assert_match "1 files scanned", shell_output("#{bin}/atomscan sample.sh 2>&1")
+    assert_match "1 files scanned", shell_output("#{bin}/atomscan --no-update sample.sh 2>&1")
   end
 end
