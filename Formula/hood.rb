@@ -3,8 +3,8 @@ class Hood < Formula
   homepage "https://github.com/atomdrift-project/hood"
 
   url "https://github.com/atomdrift-project/hood.git",
-      tag:      "v0.1.0",
-      revision: "1b63aeb738144de7c97e991d7d19b1e0e3dacb12"
+      tag:      "v0.1.1",
+      revision: "95c7dbcbac5156d08ee28d1183f5601187753ba6"
   license "Apache-2.0"
   head "https://github.com/atomdrift-project/hood.git", branch: "main"
 
