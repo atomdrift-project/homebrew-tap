@@ -143,23 +143,47 @@ jobs:
               continue
             fi
 
-            if grep -q "/download/$tag/" "Formula/$f.rb"; then
-              echo "ok      $f - already at $tag"
-              continue
-            fi
+            # Track the newest release that actually published checksums, not
+            # simply the newest release. Those are routinely different here: a
+            # tag can be mid-build for hours, and a run can be cancelled or fail
+            # outright and never produce assets at all. Keying off the newest
+            # tag alone would strand the formula on a much older version while a
+            # perfectly good signed release sat one tag below the broken one.
+            # Drafts are excluded; prereleases are not, since they are published
+            # artifacts that a tap may legitimately track.
+            best="$(gh api "repos/$repo/releases?per_page=20" \
+              --jq '[.[] | select(.draft | not) | select([.assets[].name] | index("SHA256SUMS"))] | first | .tag_name // ""' \
+              2>/dev/null || true)"
 
-            rm -rf sums && mkdir sums
-            if ! gh release download "$tag" --repo "$repo" \
-                --pattern 'SHA256SUMS*' --dir sums 2>/dev/null; then
+            if [ -z "$best" ]; then
               # Never fall back to source here. The formula stays on its last
               # verified release, which still works, rather than being pushed
               # onto an unverified source build; past the gate that stops being
               # a slow release and starts being a broken one worth naming.
               if [ "$age" -ge "$STUCK_WARN_MINUTES" ]; then
-                echo "::warning::$f $tag has had no verified assets for ${age}m - release pipeline may be stuck"
+                echo "::warning::$f has no release with verified assets (newest $tag, ${age}m old) - release pipeline may be stuck"
               else
                 echo "wait    $f - $tag is ${age}m old, assets still building"
               fi
+              skipped="$skipped $f@$tag"
+              continue
+            fi
+
+            if [ "$best" != "$tag" ]; then
+              echo "note    $f - newest is $tag (${age}m old, no assets); using $best"
+            fi
+
+            if grep -q "/download/$best/" "Formula/$f.rb"; then
+              echo "ok      $f - already at $best"
+              continue
+            fi
+
+            tag="$best"
+
+            rm -rf sums && mkdir sums
+            if ! gh release download "$tag" --repo "$repo" \
+                --pattern 'SHA256SUMS*' --dir sums 2>/dev/null; then
+              echo "::warning::$f $tag listed SHA256SUMS but it could not be downloaded"
               skipped="$skipped $f@$tag"
               continue
             fi
