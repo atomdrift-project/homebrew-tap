@@ -19,12 +19,12 @@ class Scan < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.12.1/atomscan-2.12.1-aarch64-apple-darwin.tar.gz"
-      sha256 "48dee4f8cb5a972327fe21cd867ddb721dcf86ef901e06e1edb05be786952690"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.13.0/atomscan-2.13.0-aarch64-apple-darwin.tar.gz"
+      sha256 "bd20664d05b0573750d365fc5c87aca234497910ed4f88d68ae5a8e3e48ac3ab"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.12.1/atomscan-2.12.1-x86_64-apple-darwin.tar.gz"
-      sha256 "9cc3717725a2e83c72c504e6005d77278a7ba3c8b049efce8e35dac67f507aaf"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.13.0/atomscan-2.13.0-x86_64-apple-darwin.tar.gz"
+      sha256 "5dc91b171964aa22d98a5e226784fafc8306268c9e7e11c8fd4f6824dab52962"
     end
   end
 
@@ -39,12 +39,12 @@ class Scan < Formula
   # installs these same musl targets on Linux runners.
   on_linux do
     on_arm do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.12.1/atomscan-2.12.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "01d7d204fb8ca7ae5738f541c75bf627a02209f9709f1f9be39e15af21bf7a01"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.13.0/atomscan-2.13.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "222dab925f85a6bfd3f94869f6552a0179469fee5917234f3f5e065e1e9ab5ea"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/scan/releases/download/v2.12.1/atomscan-2.12.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "a42bb7ca88157398c78e445c5b2f1812ecc1fba655d6fd6d16480a871e1ac39e"
+      url "https://github.com/atomdrift-project/scan/releases/download/v2.13.0/atomscan-2.13.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "8956893012156a334b92030bc17e9f00b6ca5aaa527db40bf3db48108ffb22ec"
     end
   end
 
