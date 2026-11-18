@@ -3,7 +3,6 @@ class Stng < Formula
   homepage "https://github.com/atomdrift-project/stng"
 
   license "Apache-2.0"
-  revision 1
 
   head do
     url "https://github.com/atomdrift-project/stng.git", branch: "main"
@@ -16,24 +15,24 @@ class Stng < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/atomdrift-project/stng/releases/download/v2.1.1/stng-2.1.1-aarch64-apple-darwin.tar.gz"
-      sha256 "9d082707b00240fd66a0b54451acadb6013cdc1b979ce17b0b0e44a10538ed11"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.0/stng-3.0.0-aarch64-apple-darwin.tar.gz"
+      sha256 "21d929f93e86b8917e1b9d241f849d925c0fded0e3ac061d2f475fc08f3d62b8"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/stng/releases/download/v2.1.1/stng-2.1.1-x86_64-apple-darwin.tar.gz"
-      sha256 "3f0d223b55f83803612dbe3586cebbc27a020e8641fbb7100aac87e508c350e6"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.0/stng-3.0.0-x86_64-apple-darwin.tar.gz"
+      sha256 "5988fea05779a882ad5bb45fb45e27426edaa603218e1c698515ca48d89f9aa5"
     end
   end
 
   # Static musl binaries avoid host glibc and libstdc++ requirements.
   on_linux do
     on_arm do
-      url "https://github.com/atomdrift-project/stng/releases/download/v2.1.1/stng-2.1.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "0cf6b0c17b335da29586e22e97577cfd0b20a8ca0bf2fabf591a5abc26a88fe4"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.0/stng-3.0.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "4f1a8096fd2cdd82e0ff587cc98f0e111d67038636487f16cac8eb052faa68bf"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/stng/releases/download/v2.1.1/stng-2.1.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "0c50810d418ac60015f4f3f57a3ab9f374059601c601995cc57ce1b2b5fb3424"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.0/stng-3.0.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "87f1dceeb7dbde862be7cd44161c36351bac2f96345e91925329fc932478bdef"
     end
   end
 
