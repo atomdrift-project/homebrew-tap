@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from test_releases import ROOT, asset_names, current_tag, release
+from test_releases import FIXTURES, ROOT, asset_names, current_tag, release
 
 
 class BumpTests(unittest.TestCase):
@@ -17,7 +17,7 @@ class BumpTests(unittest.TestCase):
         self.addCleanup(self.directory.cleanup)
         self.work = Path(self.directory.name)
         shutil.copytree(ROOT / "tools", self.work / "tools")
-        shutil.copytree(ROOT / "Formula", self.work / "Formula")
+        shutil.copytree(FIXTURES, self.work / "Formula")
         shutil.copy(ROOT / "Makefile", self.work)
         self.bin = self.work / "bin"
         self.bin.mkdir()

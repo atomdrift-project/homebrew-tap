@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -11,6 +12,17 @@ from unittest.mock import patch
 
 TOOLS = Path(__file__).resolve().parents[1]
 ROOT = TOOLS.parent
+# Frozen snapshots of the formulas these tests exercise. The live Formula/
+# files change with every bump, so tests that read them break whenever a
+# formula reaches a version the tests hardcode (v3.0.0 did exactly that).
+# They are stored as `*.rb.fixture` so `brew style` and `brew audit`, which
+# walk the tap for .rb files, never see them as formulas; each run copies them
+# into a temp directory under their real names.
+_FIXTURE_SOURCE = Path(__file__).resolve().parent / "fixtures"
+_FIXTURE_DIR = tempfile.TemporaryDirectory()
+FIXTURES = Path(_FIXTURE_DIR.name)
+for _snapshot in _FIXTURE_SOURCE.glob("*.rb.fixture"):
+    shutil.copy(_snapshot, FIXTURES / _snapshot.stem)
 sys.path.insert(0, str(TOOLS))
 from releases import URL_RE, asset_names, current_tag, version_key
 
@@ -37,7 +49,7 @@ def release(tag, path=Path("scan.rb"), missing=(), draft=False):
 class DiscoveryTests(unittest.TestCase):
     def setUp(self):
         self.path = Path("scan.rb")
-        self.text = (ROOT / "Formula/scan.rb").read_text()
+        self.text = (FIXTURES / "scan.rb").read_text()
         self.current = current_tag(self.text)
 
     def select(self, releases):
@@ -86,14 +98,14 @@ class DiscoveryTests(unittest.TestCase):
 
     def test_source_conversion_even_when_version_is_already_current(self):
         path = Path("filefacts.rb")
-        text = (ROOT / "Formula/filefacts.rb").read_text()
+        text = (FIXTURES / "filefacts.rb").read_text()
         tag = current_tag(text)
         result = latest.select_release(path, text, [release(tag, path)])
         self.assertEqual((result["status"], result["mode"]), ("bump", "binary"))
 
     def test_source_only_repository_and_incomplete_binary_pipeline(self):
         path = Path("filefacts.rb")
-        text = (ROOT / "Formula/filefacts.rb").read_text()
+        text = (FIXTURES / "filefacts.rb").read_text()
         newest = release("v3.0.0", path)
         newest["assets"] = []
         result = latest.select_release(path, text, [newest])
@@ -104,7 +116,7 @@ class DiscoveryTests(unittest.TestCase):
     def test_cli_reads_every_page_in_one_gh_invocation(self):
         pages = [[release(f"v3.0.{i}", missing=["SHA256SUMS"]) for i in range(100)],
                  [release("v2.20.0")]]
-        with patch.object(sys, "argv", ["latest-release.py", str(ROOT / "Formula/scan.rb"), "atomdrift-project/scan"]), \
+        with patch.object(sys, "argv", ["latest-release.py", str(FIXTURES / "scan.rb"), "atomdrift-project/scan"]), \
                 patch.object(latest.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, json.dumps(pages))) as run, \
                 patch("builtins.print") as output:
             latest.main()
@@ -123,7 +135,7 @@ class DiscoveryTests(unittest.TestCase):
 class UpgradeTests(unittest.TestCase):
     def setUp(self):
         self.path = Path("scan.rb")
-        self.text = (ROOT / "Formula/scan.rb").read_text()
+        self.text = (FIXTURES / "scan.rb").read_text()
         self.tag = "v3.0.0-rc.10"
         self.sums = {asset: str(i) * 64 for i, asset in enumerate(asset_names(self.path, self.tag), 1)}
 
@@ -137,7 +149,7 @@ class UpgradeTests(unittest.TestCase):
 
     def test_conversion_moves_rust_to_head_and_preserves_runtime_dependencies(self):
         path = Path("filefacts.rb")
-        source = (ROOT / "Formula/filefacts.rb").read_text()
+        source = (FIXTURES / "filefacts.rb").read_text()
         sums = {asset: "a" * 64 for asset in asset_names(path, self.tag)}
         updated = upgrade.upgrade(source, path, "atomdrift-project/filefacts", self.tag, sums)
         self.assertEqual(len(list(URL_RE.finditer(updated))), 4)
@@ -148,7 +160,7 @@ class UpgradeTests(unittest.TestCase):
 
     def test_same_version_conversion_bumps_revision_and_next_version_resets_it(self):
         path = Path("filefacts.rb")
-        source = (ROOT / "Formula/filefacts.rb").read_text()
+        source = (FIXTURES / "filefacts.rb").read_text()
         tag = current_tag(source)
         sums = {asset: "a" * 64 for asset in asset_names(path, tag)}
         converted = upgrade.upgrade(source, path, "atomdrift-project/filefacts", tag, sums)
