@@ -15,24 +15,24 @@ class Stng < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.1/stng-3.0.1-aarch64-apple-darwin.tar.gz"
-      sha256 "29448085795b33efd31b32d79bd18e4d11740ed12c0cf400385a278122fbb787"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.2/stng-3.0.2-aarch64-apple-darwin.tar.gz"
+      sha256 "2da16f547e9addd07a61bf51234a8109c8f02a2447dec324c1f0802d29cfe219"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.1/stng-3.0.1-x86_64-apple-darwin.tar.gz"
-      sha256 "d225bbb8ca8aba7f21e9e38900fe3556a1b3f4d1134e85f9d15624bcc0a92fc5"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.2/stng-3.0.2-x86_64-apple-darwin.tar.gz"
+      sha256 "4f5cf6cc048284f157576524f40468f69bcf5bed00c58606e5b3d92040116a57"
     end
   end
 
   # Static musl binaries avoid host glibc and libstdc++ requirements.
   on_linux do
     on_arm do
-      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.1/stng-3.0.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "1e7b880c768e125a0216957fc94fd480835ae3dd4e1877e68bd4b225715ebf96"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.2/stng-3.0.2-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "170fc4122f2a0245b8bd2837b3366bc311b4817bc68aae56da97f1b390748508"
     end
     on_intel do
-      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.1/stng-3.0.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "ee645f2779822b6b3a8af6e99d28da39d6b567d92cf43acf954e2d745f22d86d"
+      url "https://github.com/atomdrift-project/stng/releases/download/v3.0.2/stng-3.0.2-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "03e0ad76a5a3c71dd52bdb545e53929045ae48de99ef0b7c69db433358d6fc92"
     end
   end
 
